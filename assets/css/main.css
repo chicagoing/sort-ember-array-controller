@@ -1,0 +1,8 @@
+time { display: block; font-size: 0.9em; }
+
+.content-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.row-fluid .span8 { margin: 0; }

@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Le styles -->
+    <!-- Styles -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <style>
       body {
@@ -15,35 +15,53 @@
       }
     </style>
     <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
   </head>
 
   <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
           <a class="brand" href="#">Ember.ArrayController</a>
         </div>
       </div>
     </div>
 
-    <div class="container">
-
+    <script type="text/x-handlebars">
       <h1>Sort and filter lists using Ember.ArrayController</h1>
-      <p></p>
+      {{outlet}}
+    </script>
 
-    </div> <!-- /container -->
+    <script type="text/x-handlebars" data-template-name="index">
+      {{view App.PostsView contentBinding="controller.arrangedContent"}}
 
-    <!-- Le javascript
+      <form class="span3">
+        <fieldset>
+          <legend>Filters</legend>
+          <ul>
+            <li><a href="#" {{bindAttr class=""}} {{action 'filter' 'all'}}>All</a></li>
+            <li><a href="#" {{action 'filter' 'css'}}>CSS</a></li>
+            <li><a href="#" {{action 'filter' 'javascript'}}>Javascript</li>
+          </ul>
+        </fieldset>
+
+        <fieldset>
+          <legend>Sort by</legend>
+          <ul>
+            <li>Title</li>
+            <li>Created</li>
+          </ul>
+        </fieldset>
+      </form>
+    </script>
+
+    <!-- Javascript (Placed at the end of the document so the pages load faster)
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
     <script src="assets/js/vendor/jquery-1.9.1.js"></script>
-    <script src="assets/js/vendor/handlebars-1.0.0-rc.3.js"></script>
-    <script src="assets/js/vendor/ember-1.0.0-rc.2.js"></script>
+    <script src="assets/js/vendor/handlebars-1.0.0-rc.4.js"></script>
+    <script src="assets/js/vendor/ember-1.0.0-rc.5.js"></script>
+    <script src="assets/js/vendor/ember-data.js"></script>
+    <script src="assets/js/vendor/bootstrap.js"></script>
     <script src="assets/js/application.js"></script>
   </body>
 </html>
