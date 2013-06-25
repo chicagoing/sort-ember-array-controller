@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sort lists with Ember.ArrayController: Part 2</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Ember.ArrayController</a>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/x-handlebars">
+      <h1>Sort lists with Ember.ArrayController</h1>
+      {{outlet}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="index">
+      <p>
+        <label>Sort by: {{view Ember.Select contentBinding="sortOptions"
+          optionValuePath="content.value" optionLabelPath="content.label"
+          selectionBinding="currentSortOption"}}</label>
+      </p>
+      <ul>
+      {{#each controller}}
+        <li>
+          <h3>{{title}}</h3>
+          <time {{bindAttr datetime="published"}}>{{published}}</time>
+          {{{content}}}
+        </li>
+      {{/each}}
+      </ul>
+    </script>
+
+    <!-- Javascript (Placed at the end of the document so the pages load faster)
+    ================================================== -->
+    <script src="assets/js/vendor/jquery-1.9.1.js"></script>
+    <script src="assets/js/vendor/handlebars-1.0.0-rc.4.js"></script>
+    <script src="assets/js/vendor/ember-1.0.0-rc.5.js"></script>
+    <script src="assets/js/application.js"></script>
+    <script>
+    /* Controllers */
+    App.IndexController = Ember.ArrayController.extend({
+      contentBinding: Ember.Binding.oneWay('App.Post.FIXTURES'),
+
+      /**
+       @property sortProperties
+       Property in Ember.SortableMixin, Specifies which properties dictate the arrangedContent's sort order.
+      */
+      sortProperties: ['published', 'title'],
+
+      /**
+       @property sortAscending
+       Property in Ember.SortableMixin, Specifies the arrangedContent's sort direction
+      */
+      sortAscending: false,
+
+      /**
+       @property sortOptions
+       The list of options to display inside an Ember.Select view
+       */
+      sortOptions: [
+        Ember.Object.create({ label: "published (ascending)", sortAscending: true, value: "published-asc", property: "published" }),
+        Ember.Object.create({ label: "published (descending)", sortAscending: false, value: "published-desc", property: "published" }),
+        Ember.Object.create({ label: "title (ascending)", sortAscending: true, value: "title-asc", property: "title" }),
+        Ember.Object.create({ label: "title (descending)", sortAscending: false, value: "title-desc", property: "title" })
+      ],
+
+      /**
+       @property currentSortOption
+       The currently selected sort option
+       */
+      currentSortOption: null,
+
+      init: function() {
+        if (!this.get('currentSortOption')) {
+          // Set the default sort option to "published (descending)"
+          this.set('currentSortOption', this.get('sortOptions')[1]);
+        }
+        return this._super();
+      },
+
+      /**
+       @method
+       Fires whenever currentSortOption changes. Updates sortAscending and sortProperties
+       to trigger reordering
+       */
+      currentSortOptionChanged: function() {
+        var sortOption = this.get('currentSortOption');
+
+        // Update the sortAscending property
+        this.set('sortAscending', sortOption.get('sortAscending'));
+
+        // Update the sortProperties array
+        var propertyName = sortOption.get('property'),
+            // Clone the sortProperties array
+            sortProperties = this.get('sortProperties').slice();
+
+        // Only need to update sortProperties if it's changed
+        if (sortProperties[0] !== propertyName) {
+          // Remove this property from the array
+          sortProperties.splice(sortProperties.indexOf(propertyName), 1);
+          // ... and add it back in at the beginning
+          sortProperties.unshift(propertyName);
+          // Update sortProperties
+          this.set('sortProperties', sortProperties);
+        }
+      }.observes('currentSortOption'),
+
+      /**
+       @method
+       Called by Ember.SortableMixin to sort the arrangedContent collection
+       */
+      orderBy: function(item1, item2) {
+        var self = this,
+            result = 0,
+            sortProperties = this.get('sortProperties'),
+            sortAscending = this.get('sortAscending'),
+            val1, val2;
+
+        sortProperties.forEach(function(propertyName) {
+          if (result === 0) {
+            val1 = item1.get(propertyName);
+            val2 = item2.get(propertyName);
+
+            switch (propertyName) {
+              case 'title':
+                val1 = self.cleanString(val1);
+                val2 = self.cleanString(val2);
+                console.log(val1 + ' / ' + val2);
+                break;
+              // It might be best to ensure your model has the correct data types,
+              // but we'll include this here just for an example.
+              case 'published':
+                // Convert each date to a true date
+                val1 = new Date(val1);
+                val2 = new Date(val2);
+                break;
+            }
+
+            result = Ember.compare(val1, val2);
+            if ((result !== 0) && !sortAscending) {
+              result = (-1) * result;
+            }
+          }
+        });
+
+        return result;
+      },
+
+      /**
+       @method cleanString
+       Removes stop words from the string
+       @param {String} str: the string to clean
+       */
+      cleanString: function(str) {
+        // Convert to lowercase so uppercase & lowercase letters are weighted evenly
+        var s = str.toLowerCase(),
+            stopWords = ['a', 'an', 'and', 'are', 'as', 'at', 'be', 'but', 'by', 'for',
+              'if', 'in', 'into', 'is', 'it', 'no', 'not', 'on', 'or', 'such', 'that',
+              'the', 'their', 'then', 'there', 'these', 'they', 'this', 'to', 'was',
+              'will', 'with'],
+            re = new RegExp('(' + stopWords.join('\\b\\s?|') + '\\b\\s?)', 'gm');
+        // Remove the noise words
+        s = s.replace(re, '').trim();
+        return s;
+      }
+    });
+
+    /* Views */
+    App.ApplicationView = Ember.View.extend({
+      tagName: 'section',
+      classNames: ['container']
+    });
+
+    App.IndexView = Ember.View.extend({
+      classNames: ['row-fluid']
+    });
+    </script>
+  </body>
+</html>

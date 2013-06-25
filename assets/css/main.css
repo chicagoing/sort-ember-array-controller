@@ -1,3 +1,4 @@
+body { background: #f0f0eb; }
 time { display: block; font-size: 0.9em; }
 
 .content-list {
@@ -6,3 +7,10 @@ time { display: block; font-size: 0.9em; }
   padding: 0;
 }
 .row-fluid .span8 { margin: 0; }
+
+.is-all, .is-javascript, .is-css { font-weight: bold; }
+.filter-all li { opacity: 1em; }
+.filter-javascript .css,
+.filter-css .javascript { opacity: 0.3; }
+
+.is-active { font-weight: bold; }

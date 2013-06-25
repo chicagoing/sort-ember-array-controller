@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Sort lists with Ember.ArrayController: Part 1</title>
+    <title>Sort lists with Ember.ArrayController: Part 2</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -53,7 +53,19 @@
     <script>
     /* Controllers */
     App.IndexController = Ember.ArrayController.extend({
-      contentBinding: Ember.Binding.oneWay('App.Post.FIXTURES')
+      contentBinding: Ember.Binding.oneWay('App.Post.FIXTURES'),
+
+      /**
+       @property sortProperties
+       Property in Ember.SortableMixin, Specifies which properties dictate the arrangedContent's sort order.
+      */
+      sortProperties: ['published', 'title'],
+
+      /**
+       @property sortAscending
+       Property in Ember.SortableMixin, Specifies the arrangedContent's sort direction
+      */
+      sortAscending: false
     });
 
     /* Views */

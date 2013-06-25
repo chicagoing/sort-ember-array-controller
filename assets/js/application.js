@@ -1,101 +1,32 @@
 window.App = Ember.Application.create();
 
-/* Model */
-App.Store = DS.Store.extend({
-  revision: 12,
-  adapter: 'DS.FixtureAdapter'
-});
-
-App.Post = DS.Model.extend({
-  title: DS.attr('string'),
-  content: DS.attr('string'),
-  created: DS.attr('date'),
-  updated: DS.attr('date'),
-  published: DS.attr('date'),
-  labels: DS.attr('array')
+App.Post = Ember.Object.extend({
+  title: null,
+  content: null,
+  published: null,
+  labels: []
 });
 
 App.Post.FIXTURES = [
-  {
+  App.Post.create({
     id: 1,
-    title: 'CSS post',
-    content: 'CSS content',
-    created: 'Sat Jun 01 2013 05:30:00 GMT-0700 (PDT)',
-    updated: 'Sat Jun 01 2013 05:30:00 GMT-0700 (PDT)',
+    title: 'A New CSS Bubble',
+    content: '<p>Nullam enim justo, pretium sed nisl eu, vulputate placerat elit. In ultrices nisi dui, ut viverra nunc condimentum nec. Sed posuere, mi vel iaculis commodo, risus tortor scelerisque ligula, vel consectetur metus orci non dolor. Vestibulum odio dolor, tristique eu congue id, mollis quis eros. Morbi vulputate tincidunt vulputate.</p>',
+    published: 'Wed May 01 2013 05:30:00 GMT-0700 (PDT)',
     labels: ['css']
-  },
-  {
+  }),
+  App.Post.create({
     id: 2,
-    title: 'Javascript post',
-    content: 'Javascript content',
-    created: 'Sun Jun 02 2013 15:53:31 GMT-0700 (PDT)',
-    updated: 'Sun Jun 02 2013 15:53:31 GMT-0700 (PDT)',
+    title: 'The Best Javascript Best Practices',
+    content: 'Integer ornare ut arcu in condimentum. Phasellus ut dui dictum, mollis ipsum in, elementum mauris. Etiam a viverra leo. Suspendisse nec rutrum ligula. Quisque in libero urna. Vestibulum vel lacus dolor. Morbi commodo fringilla elit, eget elementum ligula vestibulum non. Nunc et venenatis ipsum.</p>',
+    published: 'Sun Jun 02 2013 15:53:31 GMT-0700 (PDT)',
     labels: ['javascript']
-  }
-];
-
-/* Routes */
-App.Router.map(function() {
-  //this.resource('index', { path: '/' }, function() {
-    this.resource('filter', { path: '/:filter' });
-  //});
-});
-
-App.IndexRoute = Ember.Route.extend({
-  model: function(params) {
-    return App.Post.FIXTURES;
-  }
-});
-
-/* Controllers */
-App.IndexController = Ember.ArrayController.extend({
-  sortProperties: ['created', 'title'],
-  sortAscending: false,
-
-  activeSortOption: 'created',
-  activeFilterOption: null,
-
-  sortOptions: [
-    Ember.Object.create({ label: 'Created date', value: 'property' }),
-    Ember.Object.create({ label: 'Blog title', value: 'property' })
-  ],
-
-  filter: function(name) {
-    this.set('activeFilterOption', name);
-    return false;
-  },
-
-  sort: function(property) {
-
-    return false;
-  }
-});
-
-/* Views */
-App.ApplicationView = Ember.View.extend({
-  tagName: 'section',
-  classNames: ['container']
-});
-
-App.IndexView = Ember.View.extend({
-  classNames: ['row-fluid']
-});
-
-App.PostsView = Ember.CollectionView.extend({
-  tagName: 'ul',
-  classNames: ['content-list', 'span8'],
-  classNameBindings: ['controller.activeFilterOption'],
-
-  itemViewClass: Ember.View.extend({
-    classNameBindings: ['css', 'js'],
-    css: function() {
-      return this.get('content.labels').contains('css');
-    }.property('content.labels.@each'),
-    js: function() {
-      return this.get('content.labels').contains('javascript');
-    }.property('content.labels.@each'),
-    template: Ember.Handlebars.compile('<h3>{{view.content.title}}</h3>' +
-      '<time {{bindAttr datetime="view.content.created"}}>{{view.content.created}}</time>' +
-      '{{view.content.content}}')
+  }),
+  App.Post.create({
+    id: 3,
+    title: 'CSS Preprocessors',
+    content: '<p>Phasellus sollicitudin, nunc vel suscipit convallis, justo sapien rhoncus purus, in scelerisque enim magna quis lectus. Pellentesque ut condimentum ante, sit amet semper mi. Sed ut molestie libero. Aliquam ornare sagittis arcu, eget varius lacus ultricies suscipit.</p>',
+    published: 'Sun Jun 09 2013 15:53:31 GMT-0700 (PDT)',
+    labels: ['css']
   })
-});
+];
