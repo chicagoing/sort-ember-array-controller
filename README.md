@@ -1,4 +1,4 @@
-sort-and-filter-ember-array-proxy
+sort-ember-array-controller
 =================================
 
-Sort and filter an Ember.ArrayProxy
+Sort with Ember.ArrayController
