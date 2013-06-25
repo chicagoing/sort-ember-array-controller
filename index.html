@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sort lists with Ember.ArrayController: Part 1</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/main.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">Ember.ArrayController</a>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/x-handlebars">
+      <h1>Sort lists with Ember.ArrayController</h1>
+      {{outlet}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="index">
+      <ul>
+      {{#each controller}}
+        <li>
+          <h3>{{title}}</h3>
+          <time {{bindAttr datetime="published"}}>{{published}}</time>
+          {{{content}}}
+        </li>
+      {{/each}}
+      </ul>
+    </script>
+
+    <!-- Javascript (Placed at the end of the document so the pages load faster)
+    ================================================== -->
+    <script src="assets/js/vendor/jquery-1.9.1.js"></script>
+    <script src="assets/js/vendor/handlebars-1.0.0-rc.4.js"></script>
+    <script src="assets/js/vendor/ember-1.0.0-rc.5.js"></script>
+    <script src="assets/js/application.js"></script>
+    <script>
+    /* Controllers */
+    App.IndexController = Ember.ArrayController.extend({
+      contentBinding: Ember.Binding.oneWay('App.Post.FIXTURES')
+    });
+
+    /* Views */
+    App.ApplicationView = Ember.View.extend({
+      tagName: 'section',
+      classNames: ['container']
+    });
+
+    App.IndexView = Ember.View.extend({
+      classNames: ['row-fluid']
+    });
+    </script>
+  </body>
+</html>
